@@ -5,16 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     text.style.visibility = "hidden";
 
-    passwordCheck.addEventListener("keyup", function(event){
-        if(password.value == passwordCheck.value) {
-            text.style.display = "none";
-       } else if (passwordCheck.value !== "") {
+    function checkPasswordMatch() {
+        if(password.value == passwordCheck.value && passwordCheck.value !== "") {
+            text.style.visibility = "visible";
+            text.style.color = "green";
+            text.innerHTML = "Passwords match";
+        } else if (passwordCheck.value !== "") {
             text.style.visibility = "visible";
             text.style.color = "red";
+            text.innerHTML = "Passwords do not match";
         } else {
             text.style.visibility = "hidden";
         }
-    })
+    }
 
     password.addEventListener("keyup", checkPasswordMatch);
     passwordCheck.addEventListener("keyup", checkPasswordMatch);

@@ -4,14 +4,20 @@
   <link rel="stylesheet" href="styles.css">
   <script src="showPassword.js"></script>
   <script src="pwordMatch.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js"></script>
   <title>LoveJoy Register</title>
+  <script>
+    function onSubmit(token) {
+        document.getElementById("register-form").submit();
+    }
+</script>
 </head>
 
 <body>
     <div class="wrapper">
         <h1>Register</h1>
         <div class="container">
-            <form action="register.php" method="post">
+            <form action="register.php" method="post" id="register-form">
                 <label for="fname">First Name:</label>
                 <input type="text" id="fname" name="fname" placeholder="Enter First Name" required><br>
 
@@ -34,7 +40,10 @@
 
                 <p id="pwordMatchText">Passwords do not match</p>
 
-                <input type="submit" value="Submit">
+                <button class="g-recaptcha" 
+                data-sitekey="6LdYMyQsAAAAAGE6Nh8V_WfWpaPIEFSNin1zkub7" 
+                data-callback='onSubmit' 
+                data-action='submit'>Submit</button><br>
                 <input type="reset" value="Reset">
             </form>
         </div>
