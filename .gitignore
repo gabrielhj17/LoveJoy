@@ -1,0 +1,7 @@
+# Sensitive files
+config.php
+db_config.php
+*.env
+
+# MacOS
+.DS_Store
