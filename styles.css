@@ -20,6 +20,22 @@ h1 {
   border-radius: 5px;
 }
 
+.g-recaptcha {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+.g-recaptcha:hover {
+    background-color: #45a049;
+}
+
 .container {
   display: flex;
   justify-content: center;
