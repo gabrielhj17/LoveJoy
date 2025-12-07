@@ -5,3 +5,5 @@ db_config.php
 
 # MacOS
 .DS_Store
+uploads/*
+!uploads/.gitkeep
