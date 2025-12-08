@@ -75,7 +75,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("issss", $user_id, $item_name, $details, $photo_path, $contact_method);
         
         if ($stmt->execute()) {
-            echo "Valuation request submitted successfully!";
+            $_SESSION['success_message'] = "Valuation request submitted successfully!";
+            header("Location: home.php");
+            exit();
         } else {
             echo "Error: " . $stmt->error;
         }

@@ -21,6 +21,10 @@ if (!isset($_SESSION['user_id'])) {
             <a href="adminPage.php" class="button">View Evaluation Requests</a><br><br>
         <?php endif; ?>
         <a href="logout.php" class="button">Logout</a>
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <p style="color: green;"><?php echo htmlspecialchars($_SESSION['success_message']); ?></p>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
     </div>
 </body>
 </html>
