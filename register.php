@@ -50,6 +50,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
+
+    // Check if email or phone number already registered
+    $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? OR phone_number = ?");
+    $check_stmt->bind_param("ss", $email, $pnumber);
+    $check_stmt->execute();
+    $check_result = $check_stmt->get_result();
+
+    if ($check_result->num_rows > 0) {
+        die("Email or phone number already registered. Please use different credentials or login.");
+    }
+    $check_stmt->close();
     
     // Prepared statement to prevent SQL injection
     $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone_number, password) VALUES (?, ?, ?, ?, ?)");
