@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var password = document.getElementById("pword");
-    var passwordCheck = document.getElementById("pwordcheck");
+    var password = document.getElementById("pword") || document.getElementById("new_password");
+    var passwordCheck = document.getElementById("pwordcheck") || document.getElementById("confirm_password");
     var text = document.getElementById("pwordMatchText");
+
+    if (!password || !passwordCheck || !text) return; // Exit if elements don't exist
 
     text.style.visibility = "hidden";
 

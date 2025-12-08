@@ -70,9 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://www.google.com/recaptcha/api.js"></script>
-  <title>LoveJoy Forgot Password</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="showPassword.js"></script>
+    <script src="pwordMatch.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <title>LoveJoy Forgot Password</title>
 </head>
 
 <script>
@@ -110,10 +112,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             data-sitekey="6LdYMyQsAAAAAGE6Nh8V_WfWpaPIEFSNin1zkub7" 
             data-callback='onSubmit' 
             data-action='submit'>Reset Password</button><br>
+
+            <input type="checkbox" onclick="showPassword()">Show Password
+
+            <p id="pwordMatchText">Passwords do not match</p>
         </form>
         
         <a href="login.html" class="button">Back to Login</a>
         <?php endif; ?>
   </div>
+
+<script src="showPassword.js"></script>
+<script src="pwordMatch.js"></script>
 </body>
 </html>
