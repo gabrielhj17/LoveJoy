@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -55,11 +56,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sssss", $fname, $lname, $email, $pnumber, $hashed_password);
     
     if ($stmt->execute()) {
-        echo "Registration successful!";
+    // Get the newly created user's ID
+    $new_user_id = $stmt->insert_id;
+    
+    // Start session and log them in
+    $_SESSION['user_id'] = $new_user_id;
+    $_SESSION['email'] = $email;
+    $_SESSION['first_name'] = $fname;
+    $_SESSION['is_admin'] = 0; // New users are not admins by default
+    
+    // Redirect to home page
+    header("Location: home.php");
+    exit();
     } else {
         echo "Error: " . $stmt->error;
     }
-    
+
     $stmt->close();
     $conn->close();
 }
