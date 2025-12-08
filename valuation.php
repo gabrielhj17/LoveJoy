@@ -25,25 +25,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $file_name = $_FILES['photo']['name'];
     $file_tmp = $_FILES['photo']['tmp_name'];
     $file_size = $_FILES['photo']['size'];
-    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-    
-    // Validate file
-    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-    $max_size = 5 * 1024 * 1024; // 5MB
-    
-    if (!in_array($file_ext, $allowed_extensions)) {
-        die("Invalid file type. Only JPG, PNG, and GIF allowed.");
+    $file_error = $_FILES['photo']['error'];
+
+    // Check for upload errors
+    if ($file_error !== UPLOAD_ERR_OK) {
+        die("File upload error. Error code: " . $file_error);
     }
     
+    // Validate file type using mime type
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime_type = $finfo->file($file_tmp);
+
+    $allowed_mime_types = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($mime_type, $allowed_mime_types)) {
+        die("Invalid file type. Only JPG, PNG, and GIF images allowed.");
+    }
+
+    // Validate file extension (double check)
+    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!in_array($file_ext, $allowed_extensions)) {
+        die("Invalid file extension.");
+    }
+
+    // Validate file size (5MB max)
+    $max_size = 5 * 1024 * 1024;
     if ($file_size > $max_size) {
         die("File too large. Maximum size is 5MB.");
     }
     
-    // Generate unique filename
-    $new_filename = uniqid() . '_' . time() . '.' . $file_ext;
+    // Generate secure unique filename
+    $new_filename = uniqid('img_', true) . '_' . time() . '.' . $file_ext;
     $photo_path = $upload_dir . $new_filename;
-    
+
+    // Move file with error checking
     if (move_uploaded_file($file_tmp, $photo_path)) {
+        // Set proper permissions
+        chmod($photo_path, 0644);
+        
         // Database connection
         $conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
         
@@ -64,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
         $conn->close();
     } else {
-        die("Error uploading file.");
+        die("Error uploading file. Please try again.");
     }
 }
 ?>
