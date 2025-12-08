@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = getDBConnection();
     
     // Get user by email - include two_factor_enabled
-    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified, two_factor_enabled FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified, two_factor_enabled, two_factor_method FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -63,23 +63,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Check if 2FA is enabled
             if ($user['two_factor_enabled'] == 1) {
-                // User has 2FA - redirect to verification
+                // User has 2FA - redirect based on method
                 $_SESSION['2fa_user_id'] = $user['user_id'];
                 $_SESSION['2fa_email'] = $user['email'];
                 $_SESSION['2fa_first_name'] = $user['first_name'];
                 $_SESSION['2fa_is_admin'] = $user['is_admin'];
                 
-                header("Location: verify2fa.php");
-                exit();
+                if ($user['two_factor_method'] === 'email') {
+                    header("Location: verify2faEmail.php");
+                    exit();
+                } else {
+                    header("Location: verify2fa.php");
+                    exit();
+                }
             } else {
-                // User doesn't have 2FA - force setup
+                // User doesn't have 2FA - show choice page
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['first_name'] = $user['first_name'];
                 $_SESSION['is_admin'] = $user['is_admin'];
                 $_SESSION['must_setup_2fa'] = true;
                 
-                header("Location: 2faSetup.php");
+                header("Location: choose2faMethod.php");
                 exit();
             }
         } else {
