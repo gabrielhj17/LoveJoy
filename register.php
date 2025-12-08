@@ -63,11 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_answer = password_hash(strtolower(trim($security_answer)), PASSWORD_DEFAULT);
     
     // Database connection
-    $conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
-    
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    $conn = getDBConnection();
 
     // Check if email or phone number already registered
     $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? OR phone_number = ?");

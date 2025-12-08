@@ -32,12 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $pword = $_POST['pword'];
     
-    // Database connection
-    $conn = new mysqli("127.0.0.1", "root", "", "users");
-    
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    // Database connection using function in config file
+    $conn = getDBConnection();
     
     // Get user by email
     $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified FROM users WHERE email = ?");

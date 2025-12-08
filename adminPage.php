@@ -1,17 +1,14 @@
 <?php
 session_start();
+require_once 'config.php';
 
 // Check if user is admin
 if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
     die("Access denied. Admin only.");
 }
 
-// Get all valuation requests with user details
-$conn = new mysqli("127.0.0.1", "root", "", "users");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Database connection
+$conn = getDBConnection();
 
 $query = "SELECT items.*, users.first_name, users.last_name, users.email, users.phone_number 
           FROM items 

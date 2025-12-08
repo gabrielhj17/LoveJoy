@@ -3,7 +3,7 @@ session_start();
 require_once 'config.php';
 
 $step = 1;
-$conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
+$conn = getDBConnection();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // reCAPTCHA verification

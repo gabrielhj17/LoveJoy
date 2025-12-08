@@ -64,12 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         chmod($photo_path, 0644);
         
         // Database connection
-        $conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
-        
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-        
+        $conn = getDBConnection();
+
         // Insert into database
         $stmt = $conn->prepare("INSERT INTO items (user_id, item_name, description, photo_path, contact_method) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("issss", $user_id, $item_name, $details, $photo_path, $contact_method);

@@ -5,11 +5,7 @@ require_once 'config.php';
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
     
-    $conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
-    
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    $conn = getDBConnection();
     
     // Find user with this token
     $stmt = $conn->prepare("SELECT user_id, email_verified FROM users WHERE verification_token = ?");
