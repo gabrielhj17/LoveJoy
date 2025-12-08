@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Get user by email
-    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -55,6 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Verify password
         if (password_verify($pword, $user['password'])) {
+            // Check email verification
+            if ($user['email_verified'] == 0) {
+                die("Please verify your email before logging in. Check your inbox for the verification link.");
+            }
+
             // Successful login - reset counter
             $reset_stmt = $conn->prepare("UPDATE users SET locked_counter = 0 WHERE user_id = ?");
             $reset_stmt->bind_param("i", $user['user_id']);

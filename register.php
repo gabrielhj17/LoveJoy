@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'emailConfig.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
@@ -53,10 +54,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($pword !== $pwordcheck) {
         die("Passwords do not match!");
     }
+
+    // Generate verification token for email validation
+    $verification_token = bin2hex(random_bytes(32));
     
-    // Hash the password and security quesiton answer
+    // Hash the password and security question answer
     $hashed_password = password_hash($pword, PASSWORD_DEFAULT);
-    $hashed_answer = password_hash(strtolower(trim($security_answer)), PASSWORD_DEFAULT); // Lowercase for consistency
+    $hashed_answer = password_hash(strtolower(trim($security_answer)), PASSWORD_DEFAULT);
     
     // Database connection
     $conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
@@ -75,24 +79,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Email or phone number already registered. Please use different credentials or login.");
     }
     $check_stmt->close();
-    
-    // Prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone_number, security_question, security_answer_hash, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssss", $fname, $lname, $email, $pnumber, $security_question, $hashed_answer, $hashed_password);
+
+    // Insert user with verification token (email_verified = 0)
+    $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone_number, security_question, security_answer_hash, password, email_verified, verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)");
+    $stmt->bind_param("ssssssss", $fname, $lname, $email, $pnumber, $security_question, $hashed_answer, $hashed_password, $verification_token);
     
     if ($stmt->execute()) {
-    // Get the newly created user's ID
-    $new_user_id = $stmt->insert_id;
-    
-    // Start session and log them in
-    $_SESSION['user_id'] = $new_user_id;
-    $_SESSION['email'] = $email;
-    $_SESSION['first_name'] = $fname;
-    $_SESSION['is_admin'] = 0;
-    
-    // Redirect to home page
-    header("Location: home.php");
-    exit();
+        // Use PHPMailer function instead of mail()
+        if (sendVerificationEmail($email, $fname, $verification_token)) {
+            echo "Registration successful! Please check your email to verify your account before logging in.";
+        } else {
+            $verification_link = "http://localhost/lovejoy/verifyEmail.php?token=" . $verification_token;
+            echo "Registration successful! Your verification link is: <a href='$verification_link'>$verification_link</a><br>(Email sending failed - use this link to verify)";
+        }
     } else {
         echo "Error: " . $stmt->error;
     }
