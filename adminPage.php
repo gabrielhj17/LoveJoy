@@ -26,7 +26,9 @@ $result = $conn->query($query);
 </head>
 <body>
     <h1>LoveJoy Admin Page</h1>
-    <a href="home.php" class="button">Back to Home</a>
+    <div class="container">
+        <a href="home.php" class="button">Back to Home</a>
+    </div>
     <div class="adminContainer">
         <?php if ($result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>

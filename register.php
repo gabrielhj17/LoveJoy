@@ -33,16 +33,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lname = $_POST['lname'];
     $email = $_POST['email'];
     $pnumber = $_POST['pnumber'];
+    $security_question = $_POST['security_question'];
+    $security_answer = $_POST['security_answer'];
     $pword = $_POST['pword'];
     $pwordcheck = $_POST['pwordcheck'];
+
+    // Validate all fields are filled
+    if (empty($fname) || empty($lname) || empty($email) || empty($pnumber) || empty($security_question) || empty($security_answer) || empty($pword) || empty($pwordcheck)) {
+        die("All fields are required. Please fill in all information.");
+    }
+
+    // Trim whitespace
+    $fname = trim($fname);
+    $lname = trim($lname);
+    $email = trim($email);
+    $pnumber = trim($pnumber);
     
     // Check passwords match
     if ($pword !== $pwordcheck) {
         die("Passwords do not match!");
     }
     
-    // Hash the password
+    // Hash the password and security quesiton answer
     $hashed_password = password_hash($pword, PASSWORD_DEFAULT);
+    $hashed_answer = password_hash(strtolower(trim($security_answer)), PASSWORD_DEFAULT); // Lowercase for consistency
     
     // Database connection
     $conn = new mysqli("localhost", "root", "", "users", null, "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock");
@@ -63,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check_stmt->close();
     
     // Prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone_number, password) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $fname, $lname, $email, $pnumber, $hashed_password);
+    $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone_number, security_question, security_answer_hash, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $fname, $lname, $email, $pnumber, $security_question, $hashed_answer, $hashed_password);
     
     if ($stmt->execute()) {
     // Get the newly created user's ID
@@ -74,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $_SESSION['user_id'] = $new_user_id;
     $_SESSION['email'] = $email;
     $_SESSION['first_name'] = $fname;
-    $_SESSION['is_admin'] = 0; // New users are not admins by default
+    $_SESSION['is_admin'] = 0;
     
     // Redirect to home page
     header("Location: home.php");
