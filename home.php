@@ -6,6 +6,12 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit();
 }
+
+// Redirect to 2FA setup if not completed
+if (isset($_SESSION['must_setup_2fa']) && $_SESSION['must_setup_2fa'] === true) {
+    header("Location: 2faSetup.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <br>

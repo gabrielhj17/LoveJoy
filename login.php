@@ -35,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Database connection using function in config file
     $conn = getDBConnection();
     
-    // Get user by email
-    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified FROM users WHERE email = ?");
+    // Get user by email - include two_factor_enabled
+    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified, two_factor_enabled FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -56,19 +56,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 die("Please verify your email before logging in. Check your inbox for the verification link.");
             }
 
-            // Successful login - reset counter
+            // Reset failed login counter
             $reset_stmt = $conn->prepare("UPDATE users SET locked_counter = 0 WHERE user_id = ?");
             $reset_stmt->bind_param("i", $user['user_id']);
             $reset_stmt->execute();
-            
-            // Create session
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['first_name'] = $user['first_name'];
-            $_SESSION['is_admin'] = $user['is_admin'];
-            
-            header("Location: home.php");
-            exit();
+
+            // Check if 2FA is enabled
+            if ($user['two_factor_enabled'] == 1) {
+                // User has 2FA - redirect to verification
+                $_SESSION['2fa_user_id'] = $user['user_id'];
+                $_SESSION['2fa_email'] = $user['email'];
+                $_SESSION['2fa_first_name'] = $user['first_name'];
+                $_SESSION['2fa_is_admin'] = $user['is_admin'];
+                
+                header("Location: verify2fa.php");
+                exit();
+            } else {
+                // User doesn't have 2FA - force setup
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['first_name'] = $user['first_name'];
+                $_SESSION['is_admin'] = $user['is_admin'];
+                $_SESSION['must_setup_2fa'] = true;
+                
+                header("Location: 2faSetup.php");
+                exit();
+            }
         } else {
             // Failed login - increment counter
             $new_counter = $user['locked_counter'] + 1;
