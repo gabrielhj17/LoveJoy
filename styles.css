@@ -39,6 +39,7 @@ h1 {
 
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 15px;
@@ -108,13 +109,49 @@ input[type=reset]:hover {
 }
 
 textarea {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    resize: vertical;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  resize: vertical;
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.request-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
+  clear: both;
+}
+
+.request-image {
+  max-width: 200px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.request-details {
+  flex: 1;
+}
+
+.request-details h3 {
+  margin-top: 0;
 }
