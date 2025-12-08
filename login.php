@@ -1,5 +1,5 @@
 <?php
-session_start(); // Start session for logged-in users
+session_start();
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Connection failed: " . $conn->connect_error);
     }
     
-    // Prepared statement to get user by email
-    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin FROM users WHERE email = ?");
+    // Get user by email
+    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -48,19 +48,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
         
-        // Verify the password against the hashed password
+        // Check if account is locked
+        if ($user['locked_counter'] >= 3) {
+            die("Account is locked due to multiple failed login attempts. Please reset your password using the 'Forgot Password' feature.");
+        }
+        
+        // Verify password
         if (password_verify($pword, $user['password'])) {
-            // Password is correct - create session
+            // Successful login - reset counter
+            $reset_stmt = $conn->prepare("UPDATE users SET locked_counter = 0 WHERE user_id = ?");
+            $reset_stmt->bind_param("i", $user['user_id']);
+            $reset_stmt->execute();
+            
+            // Create session
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['first_name'] = $user['first_name'];
             $_SESSION['is_admin'] = $user['is_admin'];
             
-            // Redirect to dashboard or home page
             header("Location: home.php");
             exit();
         } else {
-            echo "Invalid email or password!";
+            // Failed login - increment counter
+            $new_counter = $user['locked_counter'] + 1;
+            
+            $update_stmt = $conn->prepare("UPDATE users SET locked_counter = ? WHERE user_id = ?");
+            $update_stmt->bind_param("ii", $new_counter, $user['user_id']);
+            $update_stmt->execute();
+            
+            if ($new_counter >= 3) {
+                die("Account locked due to 3 failed login attempts. Please reset your password using the 'Forgot Password' feature.");
+            } else {
+                $remaining = 3 - $new_counter;
+                echo "Invalid password! You have $remaining attempt(s) remaining.";
+            }
         }
     } else {
         echo "Invalid email or password!";

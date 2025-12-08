@@ -52,9 +52,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif ($new_password !== $confirm_password) {
                 $error = "Passwords do not match.";
             } else {
-                // Update password
+                // Update password and reset counter
                 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-                $update_stmt = $conn->prepare("UPDATE users SET password = ? WHERE user_id = ?");
+                $update_stmt = $conn->prepare("UPDATE users SET password = ?, locked_counter = 0 WHERE user_id = ?");
                 $update_stmt->bind_param("si", $hashed_password, $user['user_id']);
                 
                 if ($update_stmt->execute()) {
