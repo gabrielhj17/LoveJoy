@@ -3,7 +3,7 @@ session_start();
 require_once 'config.php';
 
 // Check if user is logged in and needs to setup 2FA
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['must_setup_2fa'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit();
 }

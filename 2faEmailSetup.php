@@ -28,9 +28,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-// Check if user must setup 2FA
-$must_setup = isset($_SESSION['must_setup_2fa']) && $_SESSION['must_setup_2fa'] === true;
-
 // Send verification code
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['send_code'])) {
     // Generate 6-digit code
@@ -149,10 +146,7 @@ $conn->close();
                     <input type="submit" name="send_code" value="Resend Code" style="background-color: #6c757d;">
                 </form>
             <?php endif; ?>
-            
-            <?php if (!$must_setup): ?>
-                <a href="choose2faMethod.php" class="button">Back</a>
-            <?php endif; ?>
+            <a href="choose2faMethod.php" class="button">Back</a>
         <?php endif; ?>
     </div>
 </body>
