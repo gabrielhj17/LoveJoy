@@ -52,8 +52,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = trim($email);
             $pnumber = trim($pnumber);
             
+            // Validate email format
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error = "Invalid email address format. Please enter a valid email.";
+            }
+            // Additional email validation - check for common patterns
+            elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+                $error = "Invalid email address format. Please enter a valid email.";
+            }
+            // Check if email domain has MX record (optional but recommended)
+            elseif (!checkEmailDomain($email)) {
+                $error = "Invalid email domain. Please use a valid email address.";
+            }
             // Check passwords match
-            if ($pword !== $pwordcheck) {
+            elseif ($pword !== $pwordcheck) {
                 $error = "Passwords do not match!";
             }
             // Check password meets strength guidance
@@ -63,6 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $pword) || 
                 strlen($pword) < 8) {
                 $error = "Password not strong enough, please try again using the password strength guidance";
+            }
+            // Validate phone number format (basic validation)
+            elseif (!preg_match('/^[0-9\-\+\(\)\s]{10,20}$/', $pnumber)) {
+                $error = "Invalid phone number format. Please enter a valid phone number.";
             } else {
                 // Generate verification token for email validation
                 $verification_token = bin2hex(random_bytes(32));
@@ -130,6 +146,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+// Helper function to validate email domain
+function checkEmailDomain($email) {
+    $domain = substr(strrchr($email, "@"), 1);
+    
+    // Check if domain exists and has MX records
+    if (checkdnsrr($domain, "MX") || checkdnsrr($domain, "A")) {
+        return true;
+    }
+    
+    return false;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -163,10 +191,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" id="lname" name="lname" placeholder="Enter Last Name" value="<?php echo isset($_POST['lname']) ? htmlspecialchars($_POST['lname']) : ''; ?>" required><br>
 
                 <label for="email">Email Address:</label>
-                <input type="email" id="email" name="email" placeholder="Enter Email Address" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required><br>
+                <input type="email" id="email" name="email" placeholder="Enter Email Address" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required 
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                title="Please enter a valid email address"><br>
 
                 <label for="pnumber">Phone Number:</label>
-                <input type="tel" id="pnumber" name="pnumber" placeholder="Enter Phone Number" value="<?php echo isset($_POST['pnumber']) ? htmlspecialchars($_POST['pnumber']) : ''; ?>" required><br>
+                <input type="tel" id="pnumber" name="pnumber" placeholder="Enter Phone Number" value="<?php echo isset($_POST['pnumber']) ? htmlspecialchars($_POST['pnumber']) : ''; ?>" required
+                pattern="[0-9\-\+\(\)\s]{10,20}"
+                title="Please enter a valid phone number (10-20 digits)"><br>
 
                 <label for="security_question">Security Question:</label>
                 <select id="security_question" name="security_question" required>
@@ -206,7 +238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 data-callback='onSubmit' 
                 data-action='submit'>Submit</button><br>
 
-                <input type="reset" value="Reset">
+                <input type="reset" value="Reset" class="button">
                 
                 <a href="login.html" class="button">Already got an account? - Login Here</a>
             </form>
