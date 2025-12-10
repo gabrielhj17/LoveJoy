@@ -10,12 +10,23 @@ if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
 // Database connection
 $conn = getDBConnection();
 
-$query = "SELECT items.*, users.first_name, users.last_name, users.email, users.phone_number 
-          FROM items 
-          JOIN users ON items.user_id = users.user_id 
-          ORDER BY items.upload_date DESC";
+// Get all evaluation requests with user details
+$query = "
+    SELECT 
+        er.*, 
+        up.first_name, 
+        up.last_name, 
+        u.email, 
+        up.phone_number,
+        up.preferred_contact_method
+    FROM evaluation_requests er
+    JOIN users u ON er.user_id = u.user_id
+    JOIN user_profiles up ON u.user_id = up.user_id
+    ORDER BY er.upload_date DESC
+";
 $result = $conn->query($query);
 ?>
+
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="styles.css">
@@ -36,9 +47,9 @@ $result = $conn->query($query);
                         <p><strong>From:</strong> <?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></p>
                         <p><strong>Date:</strong> <?php echo date('M d, Y', strtotime($row['upload_date'])); ?></p>
                         <p><strong>Description: </strong><?php echo htmlspecialchars($row['description']); ?></p>
-                        <p><strong>Contact via:</strong> <?php echo htmlspecialchars($row['contact_method']); ?> - 
+                        <p><strong>Contact via:</strong> <?php echo htmlspecialchars($row['preferred_contact_method']); ?> - 
                         <?php 
-                        if ($row['contact_method'] == 'email') {
+                        if ($row['preferred_contact_method'] == 'email') {
                             echo htmlspecialchars($row['email']);
                         } else {
                             echo htmlspecialchars($row['phone_number']);

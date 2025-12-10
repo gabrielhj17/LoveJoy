@@ -35,8 +35,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Database connection using function in config file
     $conn = getDBConnection();
     
-    // Get user by email - include two_factor_enabled
-    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, email, password, is_admin, locked_counter, email_verified, two_factor_enabled, two_factor_method FROM users WHERE email = ?");
+    // Join tables to get all user info
+    $stmt = $conn->prepare("
+        SELECT 
+            u.user_id, 
+            u.email, 
+            u.password, 
+            u.is_admin, 
+            u.locked_counter, 
+            u.email_verified,
+            up.first_name,
+            us.two_factor_enabled,
+            us.two_factor_method
+        FROM users u
+        LEFT JOIN user_profiles up ON u.user_id = up.user_id
+        LEFT JOIN user_security us ON u.user_id = us.user_id
+        WHERE u.email = ?
+    ");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();

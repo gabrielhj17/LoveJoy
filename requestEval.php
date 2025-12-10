@@ -29,12 +29,6 @@ if (!isset($_SESSION['user_id'])) {
             <label for="photo">Upload Photo:</label>
             <input type="file" id="photo" name="photo" accept="image/*" required><br>
             
-            <label for="contact_method">Preferred Contact Method:</label>
-            <select id="contact_method" name="contact_method" required>
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
-            </select><br>
-            
             <input type="submit" value="Submit Request"><br>
             
             <input type="reset" value="Reset">

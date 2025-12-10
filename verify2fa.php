@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $code = $_POST['code'];
     
     $conn = getDBConnection();
-    $stmt = $conn->prepare("SELECT two_factor_secret FROM users WHERE user_id = ?");
+    $stmt = $conn->prepare("SELECT us.two_factor_secret FROM users u JOIN user_security us ON u.user_id = us.user_id WHERE u.user_id = ?");
     $stmt->bind_param("i", $_SESSION['2fa_user_id']);
     $stmt->execute();
     $result = $stmt->get_result();

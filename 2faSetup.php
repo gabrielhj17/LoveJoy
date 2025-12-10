@@ -20,7 +20,12 @@ $conn = getDBConnection();
 $google2fa = new Google2FA();
 
 // Get user info
-$stmt = $conn->prepare("SELECT email, two_factor_enabled, two_factor_secret FROM users WHERE user_id = ?");
+$stmt = $conn->prepare("
+    SELECT u.email, us.two_factor_enabled, us.two_factor_secret 
+    FROM users u 
+    JOIN user_security us ON u.user_id = us.user_id 
+    WHERE u.user_id = ?
+");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -37,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['enable_2fa'])) {
     // Verify the code
     if ($google2fa->verifyKey($secret, $code)) {
         // Save the secret to database
-        $update_stmt = $conn->prepare("UPDATE users SET two_factor_enabled = 1, two_factor_secret = ? WHERE user_id = ?");
+        $update_stmt = $conn->prepare("UPDATE user_security SET two_factor_enabled = 1, two_factor_secret = ?, two_factor_method = 'google' WHERE user_id = ?");
         $update_stmt->bind_param("si", $secret, $_SESSION['user_id']);
         $update_stmt->execute();
         
@@ -53,20 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['enable_2fa'])) {
     } else {
         $error = "Invalid verification code. Please try again.";
     }
-}
-
-// Handle disabling 2FA (only if not mandatory)
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['disable_2fa']) && !$must_setup) {
-    $update_stmt = $conn->prepare("UPDATE users SET two_factor_enabled = 0, two_factor_secret = NULL WHERE user_id = ?");
-    $update_stmt->bind_param("i", $_SESSION['user_id']);
-    $update_stmt->execute();
-    
-    $success = "Two-factor authentication disabled.";
-    
-    // Refresh user data
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
 }
 
 // Generate new secret if setting up

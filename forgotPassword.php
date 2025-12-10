@@ -36,7 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $confirm_password = $_POST['confirm_password'];
         
         // Get user by email
-        $stmt = $conn->prepare("SELECT user_id, security_question, security_answer_hash FROM users WHERE email = ?");
+        $stmt = $conn->prepare("
+            SELECT u.user_id, us.security_question, us.security_answer_hash 
+            FROM users u 
+            JOIN user_security us ON u.user_id = us.user_id 
+            WHERE u.email = ?
+        ");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();

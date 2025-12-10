@@ -62,28 +62,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($pword, PASSWORD_DEFAULT);
     $hashed_answer = password_hash(strtolower(trim($security_answer)), PASSWORD_DEFAULT);
     
-    // Database connection
+    // Database connection using function in config.php
     $conn = getDBConnection();
 
-    // Check if email or phone number already registered
-    $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? OR phone_number = ?");
-    $check_stmt->bind_param("ss", $email, $pnumber);
+    // Check if email already registered
+    $check_stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
+    $check_stmt->bind_param("s", $email);
     $check_stmt->execute();
     $check_result = $check_stmt->get_result();
 
     if ($check_result->num_rows > 0) {
-        die("Email or phone number already registered. Please use different credentials or login.");
+        die("Email already registered. Please use different credentials or login.");
     }
-    $check_stmt->close();
 
-    // Insert user with verification token (email_verified = 0)
-    $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone_number, security_question, security_answer_hash, password, email_verified, verification_token) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)");
-    $stmt->bind_param("ssssssss", $fname, $lname, $email, $pnumber, $security_question, $hashed_answer, $hashed_password, $verification_token);
-    
+    // Check if phone number already registered
+    $phone_check = $conn->prepare("SELECT user_id FROM user_profiles WHERE phone_number = ?");
+    $phone_check->bind_param("s", $pnumber);
+    $phone_check->execute();
+    $phone_result = $phone_check->get_result();
+
+    if ($phone_result->num_rows > 0) {
+        die("Phone number already registered. Please use a different phone number.");
+    }
+
+    $check_stmt->close();
+    $phone_check->close();
+
+    // Insert user into users table (email_verified = 0)
+    $stmt = $conn->prepare("INSERT INTO users (email, password, email_verified) VALUES (?, ?, 0)");
+    $stmt->bind_param("ss", $email, $hashed_password);
+
     if ($stmt->execute()) {
-        // Use PHPMailer function instead of mail()
+        $new_user_id = $stmt->insert_id;
+        
+        // Insert into user_profiles
+        $profile_stmt = $conn->prepare("INSERT INTO user_profiles (user_id, first_name, last_name, phone_number) VALUES (?, ?, ?, ?)");
+        $profile_stmt->bind_param("isss", $new_user_id, $fname, $lname, $pnumber);
+        $profile_stmt->execute();
+        
+        // Insert into user_security with verification token
+        $security_stmt = $conn->prepare("INSERT INTO user_security (user_id, security_question, security_answer_hash, verification_token) VALUES (?, ?, ?, ?)");
+        $security_stmt->bind_param("isss", $new_user_id, $security_question, $hashed_answer, $verification_token);
+        $security_stmt->execute();
+        
+        // Send verification email
         if (sendVerificationEmail($email, $fname, $verification_token)) {
-            echo "Registration successful! Please check your email to verify your account before logging in.";
+            echo "Registration successful! Please check your email to verify your account.";
         } else {
             $verification_link = "http://localhost/lovejoy/verifyEmail.php?token=" . $verification_token;
             echo "Registration successful! Your verification link is: <a href='$verification_link'>$verification_link</a><br>(Email sending failed - use this link to verify)";
@@ -91,7 +115,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error: " . $stmt->error;
     }
-
     $stmt->close();
     $conn->close();
 }

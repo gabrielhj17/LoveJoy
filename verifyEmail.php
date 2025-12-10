@@ -8,11 +8,11 @@ if (isset($_GET['token'])) {
     $conn = getDBConnection();
     
     // Find user with this token
-    $stmt = $conn->prepare("SELECT user_id, email_verified FROM users WHERE verification_token = ?");
+    $stmt = $conn->prepare("SELECT u.user_id, u.email_verified FROM users u JOIN user_security us ON u.user_id = us.user_id WHERE us.verification_token = ?");
     $stmt->bind_param("s", $token);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
         
@@ -20,7 +20,7 @@ if (isset($_GET['token'])) {
             echo "Email already verified! <a href='login.html'>Login here</a>";
         } else {
             // Verify the email
-            $update_stmt = $conn->prepare("UPDATE users SET email_verified = 1, verification_token = NULL WHERE verification_token = ?");
+            $update_stmt = $conn->prepare("UPDATE users u JOIN user_security us ON u.user_id = us.user_id SET u.email_verified = 1, us.verification_token = NULL WHERE us.verification_token = ?");
             $update_stmt->bind_param("s", $token);
             
             if ($update_stmt->execute()) {

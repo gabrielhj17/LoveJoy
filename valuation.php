@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_SESSION['user_id'];
     $item_name = $_POST['item_name'];
     $details = $_POST['details'];
-    $contact_method = $_POST['contact_method'];
     
     // Handle file upload
     $upload_dir = 'uploads/';
@@ -66,10 +65,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Database connection
         $conn = getDBConnection();
 
-        // Insert into database
-        $stmt = $conn->prepare("INSERT INTO items (user_id, item_name, description, photo_path, contact_method) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("issss", $user_id, $item_name, $details, $photo_path, $contact_method);
-        
+        // Insert into evaluation_requests table
+        $stmt = $conn->prepare("INSERT INTO evaluation_requests (user_id, item_name, description, photo_path) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $user_id, $item_name, $details, $photo_path);
+
         if ($stmt->execute()) {
             $_SESSION['success_message'] = "Valuation request submitted successfully!";
             header("Location: home.php");

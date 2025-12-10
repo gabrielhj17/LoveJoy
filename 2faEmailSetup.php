@@ -16,7 +16,13 @@ if (!isset($_SESSION['user_id'])) {
 $conn = getDBConnection();
 
 // Get user info
-$stmt = $conn->prepare("SELECT email, two_factor_enabled, first_name FROM users WHERE user_id = ?");
+$stmt = $conn->prepare("
+    SELECT u.email, us.two_factor_enabled, up.first_name 
+    FROM users u 
+    JOIN user_security us ON u.user_id = us.user_id
+    JOIN user_profiles up ON u.user_id = up.user_id
+    WHERE u.user_id = ?
+");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -76,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['verify_code'])) {
         unset($_SESSION['setup_email_code_expiry']);
     } elseif ($code === $_SESSION['setup_email_code']) {
         // Code is valid - enable email-based 2FA
-        $update_stmt = $conn->prepare("UPDATE users SET two_factor_enabled = 1, two_factor_method = 'email' WHERE user_id = ?");
+        $update_stmt = $conn->prepare("UPDATE user_security SET two_factor_enabled = 1, two_factor_method = 'email' WHERE user_id = ?");
         $update_stmt->bind_param("i", $_SESSION['user_id']);
         $update_stmt->execute();
         
