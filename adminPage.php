@@ -55,7 +55,8 @@ $result = $conn->query($query);
                             echo htmlspecialchars($row['phone_number']);
                         }
                         ?></p>
-                        <p><strong>Status:</strong> <span class="status-<?php echo $row['status']; ?>"><?php echo htmlspecialchars($row['status']); ?></span></p>
+                        <p><strong>Status:</strong> <span class="status-<?php echo $row['status']; ?>">
+                            <?php echo htmlspecialchars($row['status']); ?></span></p>
                     </div>
                 </div>
             <?php endwhile; ?>

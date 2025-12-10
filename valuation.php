@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_SESSION['user_id'];
     $item_name = $_POST['item_name'];
     $details = $_POST['details'];
+    $contact_method = $_POST['contact_method'];
     
     // Handle file upload
     $upload_dir = 'uploads/';
@@ -64,6 +65,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Database connection
         $conn = getDBConnection();
+
+        // Update user's preferred contact method in user_profiles
+        $update_pref = $conn->prepare("UPDATE user_profiles SET preferred_contact_method = ? WHERE user_id = ?");
+        $update_pref->bind_param("si", $contact_method, $user_id);
+        $update_pref->execute();
 
         // Insert into evaluation_requests table
         $stmt = $conn->prepare("INSERT INTO evaluation_requests (user_id, item_name, description, photo_path) VALUES (?, ?, ?, ?)");
