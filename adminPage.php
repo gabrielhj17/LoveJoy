@@ -4,7 +4,9 @@ require_once 'config.php';
 
 // Check if user is admin
 if (!isset($_SESSION['user_id']) || $_SESSION['is_admin'] != 1) {
-    die("Access denied. Admin only.");
+    $_SESSION['error_message'] = "Access denied. Admin privileges required.";
+    header("Location: home.php");
+    exit();
 }
 
 // Database connection
@@ -37,11 +39,11 @@ $result = $conn->query($query);
     <div class="container">
         <a href="home.php" class="button">Back to Home</a>
     </div>
-    <div class="adminContainer">
-        <?php if ($result->num_rows > 0): ?>
+    <div class="admin-container">
+        <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
                 <div class="request-card">
-                    <img src="<?php echo htmlspecialchars($row['photo_path']); ?>" class="request-image">
+                    <img src="<?php echo htmlspecialchars($row['photo_path']); ?>" class="request-image" alt="Item photo">
                     <div class="request-details">
                         <h3><?php echo htmlspecialchars($row['item_name']); ?></h3>
                         <p><strong>From:</strong> <?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></p>

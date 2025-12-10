@@ -19,6 +19,15 @@ if (!isset($_SESSION['user_id'])) {
     <h1>Request Evaluation of an Item</h1>
 
     <div class="container">
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <p style="color: red; background-color: #ffebee; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                <?php 
+                echo htmlspecialchars($_SESSION['error_message']); 
+                unset($_SESSION['error_message']);
+                ?>
+            </p>
+        <?php endif; ?>
+        
         <form action="valuation.php" method="post" enctype="multipart/form-data" id="valuation-form">
             <label for="item_name">Item Name:</label>
             <input type="text" id="item_name" name="item_name" placeholder="Enter item name" required><br>
@@ -40,6 +49,8 @@ if (!isset($_SESSION['user_id'])) {
             
             <input type="reset" value="Reset">
         </form>
+        
+        <a href="home.php" class="button">Back to Home</a>
     </div>
 </body>
 
