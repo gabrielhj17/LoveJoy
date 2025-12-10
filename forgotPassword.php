@@ -56,6 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Incorrect security answer.";
             } elseif ($new_password !== $confirm_password) {
                 $error = "Passwords do not match.";
+            } elseif (!preg_match('/[a-z]/', $pword) || 
+                !preg_match('/[A-Z]/', $pword) || 
+                !preg_match('/[0-9]/', $pword) || 
+                !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $pword) || 
+                strlen($pword) < 8) {
+                $error = "Password not strong enough, please try again using the password strength guidance";
             } else {
                 // Update password and reset counter
                 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
@@ -83,6 +89,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         document.getElementById("demo-form").submit();
       }
     </script>
+    <style>
+        .valid { color: green !important; }
+        .invalid { color: red !important; }
+    </style>
 </head>
 
 <body>
@@ -119,6 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
                 <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
                 <p id="number" class="invalid">A <b>number</b></p>
+                <p id="special" class="invalid">A <b>special character</b> (!@#$%^&* etc.)</p>
                 <p id="length" class="invalid">Minimum <b>8 characters</b></p>
             </div>
 

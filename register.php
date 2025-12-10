@@ -55,6 +55,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Passwords do not match!");
     }
 
+    // Check password meets strength guidance
+    if (!preg_match('/[a-z]/', $pword) || 
+        !preg_match('/[A-Z]/', $pword) || 
+        !preg_match('/[0-9]/', $pword) || 
+        !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $pword) || 
+        strlen($pword) < 8) {
+        die("Password not strong enough, please try again using the password strength guidance");
+    }
+
     // Generate verification token for email validation
     $verification_token = bin2hex(random_bytes(32));
     
