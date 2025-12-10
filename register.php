@@ -240,7 +240,7 @@ function checkEmailDomain($email) {
 
                 <input type="reset" value="Reset">
                 
-                <a href="login.html" class="button">Already got an account? - Login Here</a>
+                <a href="login.html">Already got an account? - Login Here</a>
             </form>
             <?php endif; ?>
         </div>
