@@ -2,15 +2,11 @@
 <html>
 <head>
     <link rel="stylesheet" href="styles.css">
-    <script src="showPassword.js"></script>
-    <script src="pwordMatch.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
     <title>LoveJoy Register</title>
-    <script>
-        function onSubmit(token) {
-            document.getElementById("register-form").submit();
-        }
-    </script>
+    <style>
+        .valid { color: green !important; }
+        .invalid { color: red !important; }
+    </style>
 </head>
 
 <body>
@@ -44,7 +40,7 @@
                 <input type="text" id="security_answer" name="security_answer" placeholder="Enter Answer" required><br>
 
                 <label for="pword">Password:</label>
-                <input type="password" id="pword" name="pword" placeholder="Enter Password" required><br>
+                <input type="password" id="pword" name="pword" placeholder="Enter Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}" required><br>
 
                 <label for="pwordcheck">Re-Enter Password:</label>
                 <input type="password" id="pwordcheck" name="pwordcheck" placeholder="Re-enter Password" required><br>
@@ -53,6 +49,15 @@
 
                 <p id="pwordMatchText">Passwords do not match</p>
 
+                <div id="message">
+                    <h3>Password must contain the following:</h3>
+                    <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                    <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                    <p id="number" class="invalid">A <b>number</b></p>
+                    <p id="special" class="invalid">A <b>special character</b> (!@#$%^&* etc.)</p>
+                    <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+                </div>
+                
                 <button class="g-recaptcha" 
                 data-sitekey="6LdYMyQsAAAAAGE6Nh8V_WfWpaPIEFSNin1zkub7" 
                 data-callback='onSubmit' 
@@ -61,13 +66,17 @@
                 <a href="login.html" class="button">Already got an account? - Login Here</a>
             </form>
         </div>
-
-        <div id="message">
-            <h3>Password must contain the following:</h3>
-            <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-            <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-            <p id="number" class="invalid">A <b>number</b></p>
-            <p id="length" class="invalid">Minimum <b>8 characters</b></p>
-        </div>
     </div>
+
+    <!-- Scripts at bottom so DOM is ready -->
+    <script src="showPassword.js"></script>
+    <script src="pwordMatch.js"></script>
+    <script src="pwordStrength.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById("register-form").submit();
+        }
+    </script>
 </body>
+</html>

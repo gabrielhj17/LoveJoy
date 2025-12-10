@@ -145,3 +145,35 @@ textarea {
 .request-details h3 {
   margin-top: 0;
 }
+
+/* Password strength message */
+#message {
+    display: block;
+    background: #f1f1f1;
+    color: #000;
+    position: relative;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: left;
+}
+
+#message h3 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+#message p {
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+/* Green for valid requirements */
+.valid {
+    color: green !important;
+}
+
+/* Red for invalid requirements */
+.invalid {
+    color: red !important;
+}
