@@ -78,20 +78,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="styles.css">
     <script src="https://www.google.com/recaptcha/api.js"></script>
     <title>LoveJoy Forgot Password</title>
+    <script>
+      function onSubmit(token) {
+        document.getElementById("demo-form").submit();
+      }
+    </script>
 </head>
-
-<script>
-  function onSubmit(token) {
-    document.getElementById("demo-form").submit();
-  }
-</script>
 
 <body>
     <div class="container">
         <h1>Reset Password</h1>
         
         <?php if (isset($error)): ?>
-            <p style="color: red;"><?php echo $error; ?></p>
+            <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
         
         <?php if (isset($success)): ?>
@@ -111,21 +110,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="confirm_password">Confirm New Password:</label>
             <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required><br>
 
+            <input type="checkbox" onclick="showPassword()">Show Password
+
+            <p id="pwordMatchText">Passwords do not match</p>
+
+            <div id="message">
+                <h3>Password must contain the following:</h3>
+                <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                <p id="number" class="invalid">A <b>number</b></p>
+                <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+            </div>
+
             <button class="g-recaptcha" 
             data-sitekey="6LdYMyQsAAAAAGE6Nh8V_WfWpaPIEFSNin1zkub7" 
             data-callback='onSubmit' 
             data-action='submit'>Reset Password</button><br>
-
-            <input type="checkbox" onclick="showPassword()">Show Password
-
-            <p id="pwordMatchText">Passwords do not match</p>
         </form>
         
         <a href="login.html" class="button">Back to Login</a>
         <?php endif; ?>
-  </div>
+    </div>
 
-<script src="showPassword.js"></script>
-<script src="pwordMatch.js"></script>
+    <script src="showPassword.js"></script>
+    <script src="pwordMatch.js"></script>
+    <script src="pwordStrength.js"></script>
 </body>
 </html>
