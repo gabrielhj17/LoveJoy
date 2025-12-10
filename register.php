@@ -238,7 +238,7 @@ function checkEmailDomain($email) {
                 data-callback='onSubmit' 
                 data-action='submit'>Submit</button><br>
 
-                <input type="reset" value="Reset" class="button">
+                <input type="reset" value="Reset">
                 
                 <a href="login.html" class="button">Already got an account? - Login Here</a>
             </form>
