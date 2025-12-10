@@ -7,7 +7,7 @@ h1 {
     margin-top: 20px;
 }
 
-.button {
+.button, input[type=reset] {
   background-color: red;
   border: none;
   color: white;
@@ -76,16 +76,6 @@ select {
 input[type=submit] {
   width: 100%;
   background-color: #4CAF50;
-  color: white;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-input[type=reset] {
-  width: 100%;
-  background-color: #FF0000;
   color: white;
   padding: 14px;
   margin: 8px 0;

@@ -30,7 +30,7 @@ function sendVerificationEmail($to, $fname, $verification_token) {
             <h2>Hello $fname,</h2>
             <p>Thank you for registering with LoveJoy!</p>
             <p>Please click the button below to verify your email address:</p>
-            <p><a href='$verification_link' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Verify Email</a></p>
+            <p><a href='$verification_link' target='_blank' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Verify Email</a></p>
             <p>Or copy this link: $verification_link</p>
             <p>If you did not create this account, please ignore this email.</p>
             <p>Best regards,<br>LoveJoy Team</p>
