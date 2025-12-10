@@ -94,3 +94,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <title>Email Verification</title>
+</head>
+<body>
+    <h1>Email Two-Factor Authentication</h1>
+    
+    <div class="container">
+        <?php if ($error): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
+        
+        <p>A verification code has been sent to:</p>
+        <p><strong><?php echo htmlspecialchars($user['email']); ?></strong></p>
+        
+        <p>Enter the 6-digit code from your email:</p>
+        
+        <form method="post">
+            <label for="code">Verification Code:</label>
+            <input type="text" id="code" name="code" maxlength="6" pattern="[0-9]{6}" required autofocus>
+            <input type="submit" value="Verify">
+        </form>
+        
+        <a href="login.html">Cancel</a>
+    </div>
+</body>
+</html>
