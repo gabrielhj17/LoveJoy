@@ -56,11 +56,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Incorrect security answer.";
             } elseif ($new_password !== $confirm_password) {
                 $error = "Passwords do not match.";
-            } elseif (!preg_match('/[a-z]/', $pword) || 
-                !preg_match('/[A-Z]/', $pword) || 
-                !preg_match('/[0-9]/', $pword) || 
-                !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $pword) || 
-                strlen($pword) < 8) {
+            } elseif (!preg_match('/[a-z]/', $new_password) ||
+                !preg_match('/[A-Z]/', $new_password) ||
+                !preg_match('/[0-9]/', $new_password) ||
+                !preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $new_password) ||
+                strlen($new_password) < 8) {
                 $error = "Password not strong enough, please try again using the password strength guidance";
             } else {
                 // Update password and reset counter
