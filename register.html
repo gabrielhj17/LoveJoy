@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" href="styles.css">
     <title>LoveJoy Register</title>
+    <!-- Force colours of password strength to display -->
     <style>
         .valid { color: green !important; }
         .invalid { color: red !important; }
@@ -59,6 +60,7 @@
                     <p id="length" class="invalid">Minimum <b>8 characters</b></p>
                 </div>
                 
+                <!-- Run recaptcha on submit -->
                 <button class="g-recaptcha" 
                 data-sitekey="6LdYMyQsAAAAAGE6Nh8V_WfWpaPIEFSNin1zkub7" 
                 data-callback='onSubmit' 
@@ -71,7 +73,7 @@
         </div>
     </div>
 
-    <!-- Scripts at bottom so DOM is ready -->
+    <!-- Scripts at bottom so they load properly -->
     <script src="showPassword.js"></script>
     <script src="pwordMatch.js"></script>
     <script src="pwordStrength.js"></script>

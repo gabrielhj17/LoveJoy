@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Get form elemnts, works for register and reset password
     var password = document.getElementById("pword") || document.getElementById("new_password");
     var letter = document.getElementById("letter");
     var capital = document.getElementById("capital");

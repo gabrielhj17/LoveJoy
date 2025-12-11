@@ -53,5 +53,4 @@ if (!isset($_SESSION['user_id'])) {
         <a href="home.php" class="button">Back to Home</a>
     </div>
 </body>
-
 </html>

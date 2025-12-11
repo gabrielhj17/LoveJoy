@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 require_once 'emailConfig.php';
-
+// Initialise error and success messages
 $error = '';
 $success = '';
 
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
                 $error = "Invalid email address format. Please enter a valid email.";
             }
-            // Check if email domain has MX record (optional but recommended)
+            // Check DNS records for email domain
             elseif (!checkEmailDomain($email)) {
                 $error = "Invalid email domain. Please use a valid email address.";
             }
@@ -147,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Helper function to validate email domain
+// Function to validate email domain
 function checkEmailDomain($email) {
     $domain = substr(strrchr($email, "@"), 1);
     
@@ -246,11 +246,12 @@ function checkEmailDomain($email) {
         </div>
     </div>
 
-    <!-- Scripts at bottom so DOM is ready -->
+    <!-- Scripts at bottom so load correctly -->
     <script src="showPassword.js"></script>
     <script src="pwordMatch.js"></script>
     <script src="pwordStrength.js"></script>
     <script src="https://www.google.com/recaptcha/api.js"></script>
+    <!-- Submit form -->
     <script>
         function onSubmit(token) {
             document.getElementById("register-form").submit();
