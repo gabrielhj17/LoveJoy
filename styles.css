@@ -23,6 +23,7 @@ h1 {
   box-sizing: border-box;
 }
 
+/* Captcha styling */
 .g-recaptcha {
     background-color: #4CAF50;
     color: white;
@@ -50,6 +51,7 @@ h1 {
   margin: 50px auto 0 auto;
 }
 
+/* Various form styling */
 form {
   border-radius: 5px;
   background-color: #f2f2f2;
@@ -121,6 +123,7 @@ textarea {
   margin: 20px auto;
 }
 
+/* User eval requet cards */
 .request-card {
   border: 1px solid #ddd;
   border-radius: 8px;
