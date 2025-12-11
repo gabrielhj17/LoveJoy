@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 
-// Check if user is logged in and needs to setup 2FA
+// Check if user is logged in, if not redirect them to login page
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit();
@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $method = $_POST['method'];
-    
+    // Redirect to appropriate page upon response
     if ($method === 'google') {
         header("Location: 2faSetup.php");
         exit();

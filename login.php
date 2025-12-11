@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             exit();
                         }
                     } else {
-                        // User doesn't have 2FA - show choice page
+                        // User doesn't have 2FA - show 2fa setup page
                         $_SESSION['user_id'] = $user['user_id'];
                         $_SESSION['email'] = $user['email'];
                         $_SESSION['first_name'] = $user['first_name'];
@@ -110,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $update_stmt->bind_param("ii", $new_counter, $user['user_id']);
                 $update_stmt->execute();
                 
+                // Lock account if password inputted inocrrectly 3 times - force user to reset password
                 if ($new_counter >= 3) {
                     $error = "Account locked due to 3 failed login attempts. Please reset your password using the 'Forgot Password' feature.";
                 } else {

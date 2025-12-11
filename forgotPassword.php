@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'response' => $recaptchaResponse,
         'remoteip' => $_SERVER['REMOTE_ADDR']
     ];
-    
     $options = [
         'http' => [
             'header' => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -22,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'content' => http_build_query($data)
         ]
     ];
-    
     $context = stream_context_create($options);
     $result = file_get_contents($verifyURL, false, $context);
     $responseData = json_decode($result);
@@ -89,6 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         document.getElementById("demo-form").submit();
       }
     </script>
+    <!-- Force colours on password strength checker -->
     <style>
         .valid { color: green !important; }
         .invalid { color: red !important; }
@@ -143,6 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
     </div>
 
+    <!-- Scripts at the bottom so they run properly -->
     <script src="showPassword.js"></script>
     <script src="pwordMatch.js"></script>
     <script src="pwordStrength.js"></script>
