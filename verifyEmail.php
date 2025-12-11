@@ -15,7 +15,7 @@ if (isset($_GET['token'])) {
 
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
-        
+        // Straight to login if email already verified
         if ($user['email_verified'] == 1) {
             echo "Email already verified! <a href='login.html'>Login here</a>";
         } else {

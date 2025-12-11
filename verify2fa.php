@@ -5,11 +5,13 @@ require_once 'config.php';
 use PragmaRX\Google2FA\Google2FA;
 require 'vendor/autoload.php';
 
+// Check user is logged in, if not redirect to login
 if (!isset($_SESSION['2fa_user_id'])) {
     header("Location: login.html");
     exit();
 }
 
+// Prepare error messages
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

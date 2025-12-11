@@ -11,6 +11,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';
 
+// Check user is logged in, if not redirect to login
 if (!isset($_SESSION['2fa_user_id'])) {
     header("Location: login.html");
     exit();
@@ -34,6 +35,7 @@ if (!isset($_SESSION['2fa_email_code'])) {
     $mail = new PHPMailer(true);
     try {
 
+        // PHP mailer login from config file
         $mail->isSMTP();
         $mail->Host       = EMAIL_HOST;
         $mail->SMTPAuth   = true;
