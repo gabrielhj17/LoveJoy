@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['enable_2fa'])) {
         $update_stmt->execute();
         
         unset($_SESSION['temp_2fa_secret']);
-        unset($_SESSION['must_setup_2fa']); // Clear the mandatory flag
+        unset($_SESSION['must_setup_2fa']); // Clear the mandatory flag once setup is sucessful
         
         $success = "Two-factor authentication enabled successfully! You can now access your account.";
         
