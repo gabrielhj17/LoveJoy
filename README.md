@@ -8,6 +8,7 @@ A secure, full-stack PHP web application built as part of the **Introduction to 
 
 - [Overview](#overview)
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Security Highlights](#security-highlights)
 - [Tech Stack](#tech-stack)
 - [Database Schema](#database-schema)
@@ -42,6 +43,28 @@ The project was built with security as a first-class concern, implementing defen
 
 ### Admin
 - **Evaluation Listings** (`adminPage.php`) – Role-protected page displaying all submitted requests; accessible to admin role only
+
+---
+
+## Screenshots
+
+### Login
+![Login Page](loginPage.png)
+
+### Register
+![Register Page](registerPage.png)
+
+### Reset Password
+![Forgot Password Page](forgotPasswordPage.png)
+
+### Request an Evaluation
+![Request Evaluation Page](requestEvalPage.png)
+
+### Admin Home
+![Admin Home Page](adminHomePage.png)
+
+### Admin – Evaluation Requests
+![Admin Evaluation Request Dashboard](adminEvalRequestDashboard.png)
 
 ---
 
