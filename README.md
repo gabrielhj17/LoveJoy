@@ -49,22 +49,22 @@ The project was built with security as a first-class concern, implementing defen
 ## Screenshots
 
 ### Login
-![Login Page](loginPage.png)
+![Login Page](Assets/loginPage.png)
 
 ### Register
-![Register Page](registerPage.png)
+![Register Page](Assets/registerPage.png)
 
 ### Reset Password
-![Forgot Password Page](forgotPasswordPage.png)
+![Forgot Password Page](Assets/forgotPasswordPage.png)
 
 ### Request an Evaluation
-![Request Evaluation Page](requestEvalPage.png)
+![Request Evaluation Page](Assets/requestEvalPage.png)
 
 ### Admin Home
-![Admin Home Page](adminHomePage.png)
+![Admin Home Page](Assets/adminHomePage.png)
 
 ### Admin – Evaluation Requests
-![Admin Evaluation Request Dashboard](adminEvalRequestDashboard.png)
+![Admin Evaluation Request Dashboard](Assets/adminEvalRequestDashboard.png)
 
 ---
 
